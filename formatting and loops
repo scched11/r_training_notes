@@ -1,0 +1,1109 @@
+sumu <-10
+SD<-1
+N <- 10000
+n<- 30
+pop <-rnorm(N, mean = mu, sd=SD)
+plot(density(pop))
+
+
+#Check working directory
+dir()
+setwd() #must use \\ instead of \
+setwd("C:\\Users\\scott.edwards\\Documents\\R")
+
+
+
+
+#Read data for smaller files
+txttest<-read.table("winetxt.txt",header=TRUE, sep ="\t") #read tab sep file
+XX<- read.table(file.choose()) #choose file if not in directory
+
+setwd("C:/Users/scott.edwards/Desktop/Epsilon_Active_Inactive_lists")
+master <- read.csv(file.choose(), header = TRUE)
+master_na_rm <- na.omit(master)
+#Read data for larger files
+library("data.table")
+FL_RFM <- fread("RFM_FL_6.7.18.txt")
+
+********************************************
+**************#DATA CLEANING****************
+str(data) #gives us a nice look at the "structure" of the data
+satserv[satserv > 5] <- 5 #replace all items in a vector over 5 with 5
+satserv[satserv < 1] <- 1
+reop_full$SALES <- as.numeric(levels(reop_full$SALES))[reop_full$SALES] #change factor to numeric
+
+is.na(x) #will well you logically what values are TRUE/FALSE for NA
+!is.na(x)  #opposite of the above. TRUE will be for non-NA values
+x[!is.na(x)]  #gives us all the values that ARE NOT NA
+mean(x, na.rm = TRUE) #will perform the calculations ignoring NAs
+which(is.na(df$x))
+sum(is.na(weather6)) # Count missing values
+summary(weather6) #show which variables have NAs
+ind <- which(is.na(weather6$Max.Gust.SpeedMPH)) # Find indices of NAs in Max.Gust.SpeedMPH and save to object
+weather6[ind, ] # Look at the full rows for records missing Max.Gust.SpeedMPH
+
+library(tidyr) #great for data cleaning
+library(dplyr)
+# Apply spread() to bmi_long
+***MOST IMPORTANT FUNCTIONS IN tidyr***
+bmi_wide <- spread(bmi_long,year,bmi_val) #this will spread out the bmi_values into columns by "year". 
+spread(data,columns,values)
+bmi_long <- gather(bmi,year ,bmi_val, -Country) #Brings all columns and their values after "Country" into a row called "year"
+gather(data,column for headers,values,range of columns to tidy)
+#Text to columns
+separate(data, col, into) #assumes you want to split on some non-character value. you can add an additional sep = "-" if you want to specify
+example: bmi_cc_clean <- separate(bmi_cc, col = Country_ISO, into = c("Country", "ISO"), sep = "/")
+unite(data, col, unquoted names of all columns to join) #default is to split them by _ by we can add sep = "-" if we want an alternate
+example: bmi_cc <- unite(bmi_cc_clean, Country_ISO, Country, ISO, sep = "-")
+arrange(dataset, column) #sort by from the dplyr package
+#Data Cleaning Strings
+str_trim() #removes leading and trailing white space
+str_pad() #adds zeros to the left or right of a string
+str_detect() #logical whether or not a string is in a vector
+      str_detect(students2$dob,"1997")
+str_replace() #replace a string with something else
+      students2$sex <- str_replace(students2$sex,"F","Female")
+tolower()
+toupper()
+
+***********************#NAs*****************************
+#Missing & Special Values
+any(is.na(df))
+sum(is.na(df)) #will tell us how many NAs there are
+    Note that "summary" will also count this by column 
+complete.cases(df) #this can be used to only keep 
+na.omit(df) #automatically removes rows with missing values   
+df$column[df$column == ""] <- NA #replaces all blanks with NA in a column
+ind <- which(df$column == value) # Find row with Max.Humidity of 1000
+df$column[ind] <- NewValue # Change 1000 to 100
+x[!x %in% boxplot.stats(x)$out]
+
+#Removing Outliers
+
+# Convert characters to numerics
+weather6 <- mutate_each(weather5, funs(as.numeric), CloudCover:WindDirDegrees) #note: may be better to use "mutate_at"  according to documentation
+
+
+
+******************************************
+***************SAMPLING*******************
+control_pct <- 0.1
+control_index <- sample.int(length(df$column), round(length(df$column)*control_pct))
+control_objects <- tidyg[control_index,]
+control_objects
+
+
+
+
+
+
+
+#dataConnect
+install.packages("odbc")
+install.packages("DBI")
+library(odbc)
+library(DBI)
+con <- dbConnect(odbc::odbc(), "WFM_new", UID = "SCOTT.EDWARDS", PWD = "Rosey")
+dbListTables(con, schema = "edw_r")
+
+
+
+
+#Chi Sq Test
+library(mass)
+chitbl <- table(master$Advantage.Individual.Marital.Status...Person.1 , master$Core_Flag)
+chitbl
+chitbl <- table(master$Advantage.Individual.Marital.Status...Person.1 , master$Core_Flag)
+chisq.test(chitbl)
+#Subset dataframe
+test <- master_na_rm[master_na_rm$Advantage.Individual.Marital.Status...Person.1 %in% 'MARRIED' | master_na_rm$Advantage.Individual.Marital.Status...Person.1 %in% 'SINGLE',]
+chitbl2 <- table( test$Advantage.Individual.Marital.Status...Person.1, test$Core_Flag)
+chitbl2
+
+
+
+
+
+****************************************************************************************
+**************************#FUNCTIONS****************************************************
+#DO NOT do for (i in 1:length(x) print(i)). Very suceptible to bugs! instead use i in seq_along(x)
+FUNCTIONNAME <- function(input/inputs) { Expression } #standard function format
+se <- function(x) { sd(x)/sqrt(length(x)) }
+se(object) #object/vector plugged in
+#best pactice using se fx:
+seT <- function(x) {
+  tmp.sd <- sd(x) #create temp variables
+  tmp.N <- length(x)
+  tmp.se <- tmp.sd / sqrt(tmp.N)
+  return(tmp.se)
+}
+seT(object)
+
+
+
+*******************#IFS AND LOOPS*********************
+if(condition) {
+  statements
+} else if (condition2) {
+  statemnets
+} else {
+  statements
+}
+
+#ex:
+medium <- "LinkedIn"
+# Control structure for medium
+if (medium == "LinkedIn") {
+  print("Showing LinkedIn information")
+} else if (medium == "Facebook") {
+  print("Showing Facebook information")
+  # Add code to print correct string when condition is TRUE
+} else {
+  print("Unknown medium")
+}
+
+
+# Impute missing age values with the mean age
+donors$imputed_age <- ifelse(is.na(donors$age), round(mean(donors$age, na.rm = TRUE),2), donors$age)
+# Create missing value indicator for age
+donors$missing_age <- ifelse(is.na(donors$age), 1, 0)
+
+
+#ex2:
+li <- 15
+fb <- 9
+
+# Code the control-flow construct
+if (li >= 15 & fb >= 15) {
+  sms <- 2 * (li + fb)
+} else if (li < 10 & fb < 10) {
+  sms <- 0.5 * (li + fb)
+} else {
+  sms <- li + fb
+}
+
+#WHILE LOOPING
+speed <- 64
+
+# Code the while loop
+while ( speed > 30) {
+  print("Slow down!")
+speed <- speed - 7  
+}
+
+#ADVANCING PREVIOUS LOOP
+while (speed > 30) {
+  print(paste("Your speed is",speed))
+  if ( speed > 48) {
+  print("Slow down big time!")  
+  speed <- speed - 6  
+  } else {
+  print("Slow down!")  
+  speed <- speed - 6  
+  }
+}
+
+#WOULD BREAK THE LOOP AT START
+speed <- 88
+
+while (speed > 30) {
+  print(paste("Your speed is", speed))
+  
+  # Break the while loop when speed exceeds 80
+  if ( speed > 80) {
+  break  
+  }
+  
+  if (speed > 48) {
+    print("Slow down big time!")
+    speed <- speed - 11
+  } else {
+    print("Slow down!")
+    speed <- speed - 6
+  }
+}
+
+#SEGWAY TO FOR LOOPS
+i <- 1
+
+# Code the while loop
+while (i <= 10) {
+  print(i * 3)
+  if ((3*i) %% 8 == 0) {    #if 3 times i is divisible by 8, break
+  break  
+  }
+  i <- i + 1
+}
+
+# define the double for loop for matrices
+for (i in 1:nrow(ttt)) {
+  for (j in 1:ncol(ttt)) {
+    print(paste("On row", i, "and column", j, "the board contains", ttt[i,j]))
+  }
+}
+
+# The linkedin vector has already been defined for you
+linkedin <- c(16, 9, 13, 5, 2, 17, 14)
+
+# Extend the for loop including a "break" and a "next"
+for (li in linkedin) {
+  if (li > 10) {
+    print("You're popular!")
+  } else {
+    print("Be more visible!")
+  }
+  
+  # Add if statement with break
+  if (li > 16) {
+    print("This is ridiculous, I'm outta here!")
+    break
+  }
+  
+  # Add if statement with next
+   if (li < 5) {
+    print("This is too embarrassing!")
+    next
+  }
+  
+  print(li)
+}
+
+
+for (i in customerdf)
+
+
+
+****************#LAPPLY****************************
+#note that this function always returns a list. To return a vector, wrap lapply in unlist()
+#lapply takes a vector or list X, and applies the function FUN to each of its members.
+
+Object <- lapply(vector to be applied on, function) #note that you can use a pre-defined function or you can write a function witin (as below)
+names <- lapply(split_low, function(x) {x[1]})  
+
+#Create sample data objects
+pioneers <- c("GAUSS:1777", "BAYES:1702", "PASCAL:1623", "PEARSON:1857")
+split <- strsplit(pioneers, split = ":")
+split_low <- lapply(split, tolower)
+
+# Generic select function
+select_el <- function(x, index) {
+  x[index]
+}
+
+# Use lapply() twice on split_low: names and years
+names <- lapply(split_low,select_el,index = 1) 
+years <- lapply(split_low,select_el,index = 2)
+
+*********************#VAPPLY**************************
+# Definition of basics()
+basics <- function(x) {
+  c(min = min(x), mean = mean(x), max = max(x))
+}
+
+# Apply basics() over temp using vapply()
+vapply(temp,basics,numeric(3))
+vapply(temp, function(x,y) { mean(x) > 5} , logical(1), y=5)
+
+
+
+
+******************#GREP || GREPL || SUB || GSUB***********************
+emails <- c("john.doe@ivyleague.edu", "education@world.gov", "dalai.lama@peace.org",
+            "invalid.edu", "quant@bigdatacollege.edu", "cookie.monster@sesame.tv")
+# Use grepl() to match for "edu"
+grepl("edu",emails)
+# Use grep() to match for "edu", save result to hits
+hits <- grep("edu",emails)
+emails[hits]
+
+grepl("@.*\\.edu$",emails) #match "@" then .* is a wildcard and // gets us out of the wildcard so we can then also match ".edu" at the end ($)
+hits <- grep("@.*\\.edu$",emails)
+emails[hits]
+sub("@.*\\.edu$","@datacamp.edu", emails)  #rename those emails to the @datacamp.edu domain
+
+awards <- c("Won 1 Oscar.",
+  "Won 1 Oscar. Another 9 wins & 24 nominations.",
+  "1 win and 2 nominations.",
+  "2 wins & 3 nominations.",
+  "Nominated for 2 Golden Globes. 1 more win & 2 nominations.",
+  "4 wins & 1 nomination.")
+
+sub(".*\\s([0-9]+)\\snomination.*$", "\\1", awards)
+[1] "Won 1 Oscar." "24"           "2"            "3"            "2"           
+[6] "1"
+#The ([0-9]+) selects the entire number that comes before the word “nomination” in the string, and the entire match gets replaced by this number because of the \\1 that reference to the content inside the parentheses. The next video will get you up to speed with times and dates in R!
+
+
+
+
+#common stats calcs
+mean(object) + tscore * se(object)  #upper bound of CI using the se fx written above
+cor.test(df$x,df$Y) #significance of correlation at 95% CI
+quantile(DF$FIELD, prob = seq(0, 1, length = 11), type = 5, na.rm = TRUE) #deciles 
+
+
+
+
+
+
+
+********************************************
+***********#DATA VISUALIZATION**************
+hist(df$column,
+     main = "title",
+     xlab = "x axis tilte",
+     ylab = "y axis title",
+     breaks = (n), #number of bars we want
+     col = "color",
+     freq = FALSE, #makes it density not counts
+     
+     )
+axis(side=1, at=seq(60,300, by=20)) #adjust x axis. To adjust Y you would use side = 2
+lines(density(store.df$p1sales, bw = 10),  #bw is the amount of smoothing
+       type = "l", col = "black", lwd = 3)  #type is an L not a 1. lwd is line width
+
+boxplot(store.df$p2sales, xlab = "Weekly Sales", ylab = "P2",
+        main = "Weekly Sales of Product 2, All Stores", horizontal = TRUE) #horizontal rotates the plot
+boxplot(store.df$p2sales ~ store.df$storenum, horizontal = TRUE,  #Mutiple plots horizontal
+        ylab = "Store", xlab = "Weekly Unit Sales", las = 1, #forces the axis to have labels horizonal
+        main = "Weekly Sales of Product 2 by Store"
+
+qqnorm(store.df$p1sales) #QQ plot for normality
+qqnorm(log(store.df$p1sales)) #smoothing
+
+plot(density(tm_sales_NArm$Total_Sales)) #quick density
+plot(ecdf(store.df$p1sales),  #Cumulative distribution plot
+     main = "Cumulative distribution of P1 Weekly Sales",
+     ylab = "Cumulative Proportion",
+     xlab = c("P1 Weekly Sales All Stores", "90% of Weeks sold <= 175 Units"),
+     yaxt="n")
+abline(v=quantile(store.df$p1sales, pr = 0.9), lty = 3) #put a vertical dotted line at probability .9. lty = 3 is the dotted line
+abline(h=0.9,lty = 3) #put a horizonal line at probablity 0.9
+
+plot(x,y) #gives basic scatterplot
+plot(custdf$age, custdf$creditscore,  #can add in cex=0.X to change point size
+     col="blue",
+     xlim = c(15,55), ylim = c(500,900),
+     main = "Active Customers - June 2014",
+     xlab = "Customer Age (Years)", ylab = "Customer Credit Score")
+abline(h=mean(custdf$creditscore), col = "dark blue", lty = "dotted")
+abline(v=mean(custdf$age),col="dark blue", lty = "dotted")
+
+par(mfrow = c(2,2))  #plot the next 4 plots on the same panel
+plot(custdf$distance,custdf$sspend, main = "Store")
+plot(custdf$distance,custdf$ospend, main = "Online")
+plot(custdf$distance,custdf$sspend+1, log="xy", main = "Log of Store")
+plot(custdf$distance,custdf$ospend+1, log="xy", main = "Log of Online") 
+par(mfrow = c(1,1)) #returns you to single plot
+
+plot(mtcars$wt, mtcars$mpg, col = mtcars$cyl)
+lapply(mtcars$cyl, function(x) {
+  abline(lm(mpg ~ wt, mtcars, subset = (cyl == x)), col = x)
+  })   #plots and then applies a line and color to each cyl factor
+legend(x = 5, y = 33, legend = levels(mtcars$cyl),
+       col = 1:3, pch = 1, bty = "n") #sets the legend of the above plot
+
+
+pairs(formula = ~ age + creditscore + email + distance +    #plot correlation matrix for all variables listed and their interaction
+      visits + otrans +ospend + strans + sspend,
+      data = custdf)
+Library(car) #CAR stands for Companion to Applied Regression
+scatterplotMatrix()
+scatterplotMatrix(formula = ~age + creditscore + email + distance +    #more robust option to the pairs() fx
+                  visits + otrans +ospend + strans + sspend,
+                  data = custdf, diagonal = "histogram")  #green lines show linear fit, red lines show smoothed fit lines and their confidence intervals
+  
+library(corrplot)
+library(gplots)
+corrplot.mixed(corr=cor(custdf[,c(2,3,5:12)], use="complete.obs"),      #excludes NA values  
+                 upper="ellipse",tl.pos="lt",                           #upper triangle displayes ellipses. tl.pos = "left/top" for labels
+                 col=colorpanel(50,"red","gray60","blue4"))             #colorpanel defines the scale i.e. red for negative blue for positive
+
+jitter()  #quick plots for survey responses or other ordinal response variables. breaks out points
+plot(jitter(custdf$satserv),jitter(custdf$satselect),
+     xlab = "Satisfaction with Service",
+     ylab = "Satisfaction with Selection",
+     main = "Customers - June 2014")
+#remember, can us polychoric() as substitute for R corr when looking at ordinal responses
+
+library(vioplot)
+x1 <- reop_full$SALES[reop_full$Region=="PN"]
+x2 <- reop_full$SALES[reop_full$Region=="SO"]
+x3 <- reop_full$SALES[reop_full$Region=="RM"]
+x4 <- reop_full$SALES[reop_full$Region=="SW"]
+vioplot(x1,x2,x3,x4,names=c("PN","SO","RM","SW"), col = "light blue")
+#Gives us violin plots that incorporate distribution and frequency
+
+*************#ggplot2*******************
+library(ggplot2)
+ggplot(mtcars, aes(x = factor(cyl), y = mpg)) +
+  geom_point()  # Change the command below so that cyl is treated as factor
+> ggplot(mtcars, aes(x = wt, y = mpg)) +     #Standard plot
+    geom_point()
+> ggplot(mtcars, aes(x = wt, y = mpg, color = disp)) +  
+    geom_point()
+> ggplot(mtcars, aes(x = wt, y = mpg, size = disp)) +
+    geom_point()
+ggplot(diamonds, aes(x = carat, y = price, col = clarity)) +
+  geom_smooth()   #Loess lines colored by "clarity" without any points
+
+ggplot(diamonds, aes(x = carat, y = price, col = clarity)) +
+  geom_point(alpha = 0.4) #Points plotted and colored by clarity at 40% transparency
+dia_plot <- ggplot(diamonds, aes(x = carat, y = price)) #Can save a plot as an object for easier cycling 
+dia_plot + geom_smooth(aes(col = clarity), se = FALSE) #add smoothed lines to saved plot. se = false removed the shading
+
+ggplot(mtcars, aes(x = wt, y = mpg, col = cyl)) +
+  geom_point()  + 
+  geom_smooth(method = lm, se = FALSE) + 
+  geom_smooth(aes(group = 1), method = lm,se=FALSE, linetype = 2) +  #maps a different line for each cyl. I *think* you can define the factor you want to group by as well
+  facet_grid(. ~ factor)  #plot scatters in same window for each "factor"
+
+cyl.am <- ggplot(mtcars, aes(x = factor(cyl), fill = factor(am)))
+val = c("#E41A1C", "#377EB8")
+lab = c("Manual", "Automatic")
+cyl.am +
+  geom_bar(position = "dodge") +
+  scale_x_discrete("Cylinders") + 
+  scale_y_continuous("Number") +
+  scale_fill_manual("Transmission", 
+                    values = val,
+                    labels = lab) 
+
+  #instead of y=0 below you can just use stripchart() in the base package for univariate plots
+  ggplot(mtcars, aes(x = mpg, y = 0)) +
+  geom_jitter() + scale_y_continuous(limits = c(-2,2))   #scale_y_continuous just cleans up the "fake" yaxis. Note above about stripchart()
+
+
+
+  #BRING IT ALL TOGETHER
+  ggplot(FUll_prime_0716,aes(x=CS_PCT_Total,y=ID_PCT_Total,col=Region, shape = Region)) #color & shape by Region
+  + geom_point(alpha = 0.4) #40% transparency
+  + scale_x_continuous("Courtesy Swipe Percent of Total Transactions")  #xaxis title
+  + scale_y_continuous("ID'd Prime % of Total Transactions (QR/PN/Phone)") #yaxis title
+  + geom_jitter() #add slight variance to prevent overlapping of points
+  + geom_hline( yintercept = median(FUll_prime_0716$ID_PCT_Total), color = "red")  #add a horizontal red line at the y median
+  + geom_vline(xintercept = median(FUll_prime_0716$CS_PCT_Total), color = "red")  #add a vertical red line at the x median
+  + ggtitle("Coutesy Swipe % of Transactions vs ID'd Prime % of Transactions")  #title
+  + scale_shape_manual(values = 1:12)  #use 12 shapes, without adding this manual line the shape component maxes at 6
+
+
+ *******#HISTOGRAMS*****
+  ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram(binwidth = 1, fill = "#377EB8", aes(y = ..density..))  #only requires x argument. Can set y to just be a denisty metric. Note that histograms change color with "fill"
+
+ggplot(mtcars, aes(x = cyl, fill = am)) +
+  geom_bar(position = "fill")  #makes bars out of 1, i.e. bars all go to top of graph as a "fill"
+
+
+  ggplot(mtcars, aes(x = cyl, fill = am)) +
+  geom_bar(position = "dodge")  #sets two factor bars side by side
+
+  #you can also define a dodge variable
+  posn_d <- position_dodge(width=0.2)
+  ggplot(mtcars, aes(x = cyl, fill = am)) +
+  geom_bar(position = posn_d)  #bars will be overlapping
+
+  ggplot(mtcars, aes(x = cyl, fill = am)) +
+  geom_bar(position = posn_d, alpha = 0.6)  #will show you the overlap via translucent bars
+
+  ggplot(Vocab, aes(x = education, fill = vocabulary)) +
+  geom_bar(position = "fill") +
+  scale_fill_brewer()   #note that standard scale_fill_brewer only has 9 colors so may need to create a manual range:
+  blues <-brewer.pal(9,"Blues") #from the RColorBrewer package
+  blue_range <- colorRampPalette(blues)
+  ggplot(Vocab, aes(x = education, fill = vocabulary)) +
+  geom_bar(position = "fill") +
+  scale_fill_manual(values=blue_range(11)) #gets us to the same plot as before but with 11 colors instead of 9
+
+  ggplot(mtcars, aes(mpg, col = cyl)) +
+  geom_freqpoly(binwidth = 1, position = "identity") #this gives us frequency spikes instead of bars. change the color to "col" since we're not "filling" anything anymore
+
+
+**********LINES**********
+  ggplot(economics, aes(x = date, y = unemploy)) + geom_line()
+
+  ggplot(economics, aes(x = date, y = unemploy/pop)) +
+  geom_rect(data = recess,
+         aes(xmin = begin, xmax = end, ymin = -Inf, ymax = +Inf),   #Call another dataset and tll it to not use the ggplot aes (inherit.aes = FALSE). Shading the plot based on another dataset and definingthe necessary xmin, xmax, ymin, ymax
+         inherit.aes = FALSE, fill = "red", alpha = 0.2) +
+  geom_line()
+
+ggplot(fish.tidy, aes(x = Year, y = Capture, col = Species)) + geom_line() #plotting lines each colored and broken out by species
+
+
+
+
+
+
+
+
+
+#Pivots/aggregates
+by(store.df$p1sales,list(store.df$storenum,store.df$year), mean) #mean of p1 sales by store and year. Output is ugly
+aggregate(store.df$p1sales, by = list(country = store.df$country), sum) #sum of p1 sales grouped by country. Can be saved as a df
+mean(df vector[df$segment == "x"]) #mean of vectore where segment equals/in x
+mean(df vector[df$segment == "x" & df$other == "y"]) #mean of vectore where segment equals/in x and other variable is qualified by "y"
+by(seg.df$income, seg.df$segment, mean) #means of all incomes BY segment
+by(seg.df$income, list(seg.df$segment, seg.df$subscribe), mean) #same as above but by segment AND subsriber status
+# advantage of using aggregate is it's a dataframe!
+aggregate(seg.df$income ~ seg.df$segment + seg.df$subscribe, data = seg.df, mean) #Can also write it as a function
+
+
+
+
+
+
+
+#google analytics API
+token <- Auth(client.id,client.secret)
+save(token,file="./token_file") # Save the token object for future sessions into working directory (check it with getwd())
+                                #In future sessions it can be loaded by running load("./token_file")
+
+ValidateToken(token)
+query.list <- Init(start.date = "2013-11-28",                        # Build a list of all the Query Parameters
+                   end.date = "2013-12-04",
+                   dimensions = "ga:date,ga:pagePath,ga:hour,ga:medium",
+                   metrics = "ga:sessions,ga:pageviews",
+                   max.results = 10000,
+                   sort = "-ga:date",
+                   table.id = "ga:197332")  #can be found in account settings as "View ID"
+
+ga.query <- QueryBuilder(query.list) # Create the Query Builder object so that the query parameters are validated
+ga.data <- GetReportData(ga.query, token, split_daywise = T, delay = 5) # Extract the data and store it in a data-frame
+
+#building color coding vectors to code by email response
+my.col <- c("black","red") #can use colors() to view options
+my.pch <- c(1,19)  #see ?points for information
+my.col[head(custdf$email)]
+legend(x = "topright", legend = paste("Email on File:",levels(custdf$email)),
+       col=my.col,pch = my.pch)
+> plot(custdf$sspend +1, custdf$ospend +1,  #add 1 here because log(0) is undefined. With log transform, 1-10 = 10-100 for interpretation. Will allow us to see association between skewed variables
+       log= "xy", cex = 0.7,
+       col = my.col[custdf$email], pch = my.pch[custdf$email],
+       xlab = "instore",
+       ylab = "online")
+
+
+
+
+
+
+#Procedural best practice: defining data separate from procedural code for reference
+> segmeans<- matrix(c(
+  +     40,0.5,55000,2,0.5,0.1,
+  +     24,0.7,21000,1,0.2,0.2,
+  +     58,0.5,64000,0,0.7,0.05,
+  +     36,0.3,52000,2,0.3,0.2), ncol=length(segvars), byrow = TRUE)
+> 
+  > segsds<- matrix(c(
+    +     5,NA,12000,NA,NA,NA,
+    +     2,NA,5000, NA,NA,NA,
+    +     8,NA,21000,NA,NA,NA,
+    +     4,NA,10000,NA,NA,NA), ncol=length(segvars), byrow = TRUE)
+# define the double for loop for matrices
+for (i in 1:nrow(ttt)) {
+  for (j in 1:ncol(ttt)) {
+    print(paste("On row", i, "and column", j, "the board contains", ttt[i,j]))
+  }
+}
+
+
+
+
+
+
+
+
+#arules -> unsupervised learning method for picking up patterns in data
+#we want the data in a sparse matrix in order to preserve computer memory
+require(arules)
+arules1 <- read.transactions(file.choose(), sep=",")
+summary(arules2)
+inspect(arules2) #this is how you actually see the data with a sparse matrix
+#Support : How frequently an item occurs in transactions (%)
+itemFrequency(arules3) #gives you a support
+itemFrequencyPlot(arules3)
+itemFrequencyPlot(arules3, support = .15) #plot supports where > 15%
+itemFrequencyPlot(arules3, topN = 3) #top 3 by support
+#confidence : the proportion of transactions where the presence of an item or set of items results in the presence of another set of items. 
+#Essentially conditional probability. If I buy item A and item B, how likely is it that I buy C. Or, given I guy A and B, how likely is it I buy C
+# conf({A,B} -> {c}) = Support({A,B,C}) / Support({A,B})
+model1 <- apriori(arules3) #uses .1 for support and .8 for confidence
+#Lift: how much more likely is item two to be purchased with item 1 relative to all transactions
+inspect(model1[1:5]) #inspect top 5 rules
+# lift: "Candy shows up in trancations 6.2 times more than in other transactions"
+
+splashcat <- read.transactions(file.choose(),sep=",")
+catmodel <- apriori(splashcat, parameter = list(support = 0.001, confidence = .001))
+inspect(head(sort(catmodel, by="lift"),20))
+inspect(head(sort(catmodel, by="confidence"),20))
+catmodelavo <- apriori(splashcat, parameter = list(support = 0.001, confidence = .001),appearance = list(lhs = c("Avocados")))
+
+
+
+
+
+
+
+
+#ANOVA & ANCOVA
+#1. Descriptive stats & plots
+#can do simple summary or :
+install.packages("pastecs")
+library(pastecs)
+
+by(Quant, Factor, stat.desc) #will spit out descriptive stats for variable "Quant" by "Factor"
+
+#look at assumptions. For Anova:
+#1.) Independence (based on experimental design)
+#2.) Normality
+#3.) Homogeneity of variance
+#^run levene's test. Use package car
+install.packages("car")
+library(car)
+leveneTest(Depnedent, factor,center = mean) #significance means we may NOT have homogeneity
+
+#If balanced design, Type I,II,III all produce the the same result. If unbalanced, consider the impact of each
+#Type I:
+#Type II:
+#Type III:
+
+
+
+
+
+
+
+
+
+#mapping
+#need packages rworldmap & RColorBrewer
+p1salesmap <- joinCountryData2Map(aggsales,joinCode = "ISO2", #ISO2 is what we joined on, in this case "Country Code"
+               nameJoinColumn = "country") #define which column from object to join to ISO
+
+
+
+
+
+
+  library(lubridate)
+#Dates
+Sys.Date()
+Sys.time()
+%d Day (for example, 15)
+%m Months in number (for example, 08)
+%b The first three characters of a month (for example, Aug)
+%B The full name of a month (for example, August)
+%y The last two digits of a year (for example, 14)
+%Y The full year (for example, 2014)
+%A day of week full
+%a Day of week abbreviated
+
+d <- as.date("07/Aug/12", format = "%d/%b/%y")
+ Output: [1] "2012-08-07"
+
+ format(d, %B)
+  Output: [1] "August"
+
+
+  df$column <- ymd(df$column) #would read a column with date values in a year, month, date order and convert it to a date value
+  #can use y, m, d, h, m, s
+  another example: students2$nurse_visit <- ymd_hm(students2$nurse_visit)
+
+# Create vector pizza
+pizza <- c(day1, day2, day3, day4, day5) #days are already defined as dates in this example
+day_diff <- diff(pizza) #difference between allthe days
+mean(day_diff) #average distance between days
+
+
+
+
+
+*************#RFM#NOT CURRENTLY WORKING#*********
+*************************************************
+setwd("C:\Users\scott.edwards\Documents\R")
+FL_RFM <- fread("RFM_FL_6.7.18.txt")
+head(FL_RFM,10) #look at data first 10 rows
+dim(FL_RFM) #gives table dimensions in #Rows  #Columns
+
+install.packages("data.table")
+install.packages("lubridate")
+library(data.table)
+library(lubridate)
+
+FL_RFM$YMD <- ymd(FL_RFM$YMD) #convert date format
+head(FL_RFM,10) #check to make sure dates converted
+
+dedup <- FL_RFM[duplicated(FL_RFM[,"CID"]),] #create duplicatedd CID object
+dim(dedup) #Check rows, columns
+
+      ***#FUNCTION1***
+      ****************
+        startdate <- as.Date(min(FL_RFM$YMD))
+        enddate <- as.Date(max(FL_RFM$YMD))
+
+        getDataFrame <- function(FL_RFM,startDate,endDate,tIDColName=FL_RFM$CID,tDateColName=FL_RFM$YMD,tAmountColName=FL_RFM$AMOUNT){
+          
+          #order the dataframe by date descendingly
+          FL_RFM <- FL_RFM[order(FL_RFM[,FL_RFM$YMD],decreasing = TRUE),]
+          
+            #remove the rows with the duplicated IDs, and assign the df to a new df.
+          DD_FL_RFM <- FL_RFM[!duplicated(FL_RFM[,FL_RFM$CID]),]
+          
+          # caculate the Recency(days) to the endDate, the smaller days value means more recent
+          Recency <-as.numeric(difftime(endDate,DD_FL_RFM[,FL_RFM$YMD],units="days"))
+          
+          # add the Days column to the newdf data frame
+          DD_FL_RFM <-cbind(DD_FL_RFM,Recency)
+          
+          #order the dataframe by ID to fit the return order of table() and tapply()
+          DD_FL_RFM <- DD_FL_RFM[order(DD_FL_RFM[,FL_RFM$CID]),]
+          
+          # caculate the frequency
+          freq <- as.data.frame(table(FL_RFM[,FL_RFM$CID]))
+          Frequency <- freq[,2]
+          DD_FL_RFM <- cbind(DD_FL_RFM,Frequency)
+          
+          #caculate the Money per deal
+          mon <- as.data.frame(tapply(FL_RFM[,FL_RFM$AMOUNT],FL_RFM[,FL_RFM$CID],sum))
+          Monetary <- mon[,1]/Frequency
+          DD_FL_RFM <- cbind(DD_FL_RFM,Monetary)
+          
+          return(DD_FL_RFM)
+
+        }
+      ***#FUNCTION2***
+      ****************
+
+
+
+***************#REGRESSION********************
+library(ggplot2)
+library(corrplot)
+library(dplyr)
+library(readr)
+library (rms)
+library(stats)
+library(MASS)
+# Visualization of correlations
+salesData %>% select_if(is.numeric) %>%
+  select(-id) %>%
+  cor() %>% 
+  corrplot()
+
+#Testing model variables
+vif(object) <- this will give us a sense of what is skewing the model due to multicolienarity. Values above 5 are problematic and 10 are poor predictors
+AIC(object)  #run on the stats package for comparing multiple models vs each other
+stepAIC(object) #run on the MASS package, for automatic model selection
+
+new_outputs <- predict(salesModel2, newdata = salesData2_4) #predict newdata based on a model build
+mean(new_outputs)
+
+
+*********************************************
+*****************#LOGISTIC*******************
+ggplot(defaultData,aes(x = PaymentDefaul)) +
+  geom_histogram(stat = "count")   #plot the binary counts of 0 and 1
+
+glm(response ~ variables, family = binomial, data = df)  #reminder that coefficients of log models are not intuitive, but we can transform to get logodds
+
+logodds: e^coeff signing up for a newsletter increases the odds of returning to the online shop of e^coeff percent
+
+      # Build logistic regression model
+      logitModelFull <- glm(PaymentDefault ~ limitBal + sex + education + marriage +
+                         age + pay1 + pay2 + pay3 + pay4 + pay5 + pay6 + billAmt1 + 
+                         billAmt2 + billAmt3 + billAmt4 + billAmt5 + billAmt6 + payAmt1 + 
+                         payAmt2 + payAmt3 + payAmt4 + payAmt5 + payAmt6, 
+                      family = binomial, data = defaultData)
+
+      # Take a look at the model
+      summary(logitModelFull)
+
+      # Take a look at the odds
+      coefsexp <- coef(logitModelFull) %>% exp() %>% round(2)
+      coefsexp
+
+      #Build from the initial model
+        logitModelNew <- stepAIC(logitModelFull,trace = 0) 
+
+        #Look at the model
+        summary(logitModelNew) 
+
+        # Save the formula of the new model (it will be needed for the out-of-sample part) 
+        formulaLogit <- as.formula(summary(logitModelNew)$call)
+        formulaLogit
+        stepAIC()
+
+        #How to evaluate fit (3 pseudo Rsq stats- McFadden, Cox & Snell, Nagelkerke):
+        library(descr)
+        LogRegR2(object)
+
+        #predict data
+        library(SDMTools)
+        Data$newcolumn <- predict(object, type = "response", na.action = na.exclude )  #na.action excludes missing values
+        data %>% select(returnCustomer, predNew) %>% tail()
+
+        confMatrixNew <- confusion.matrix(churnData$returnCustomer, churnData$predNew, threshold = 0.5) #we set this threshold, 50% makes sense
+        confMatrixNew
+              obs
+        pred  0   1
+         0    A   B     #A is number of unlikely events correctly classified. B and C are misclasifications. D is events occuring correctly classified
+         1    C   D
+
+         MatrixAccuracy <- sum(diag(confMatrixNew)) / sum(confMatrixNew)
+         MatrixAccuracy   #gives us the accuracy of our prediction. Be careful with this number though. we could really high accuracy in "A" with a high N that would skew the accuracy high and overshadow low "D acccuracy"
+
+
+
+#####2
+library(psych)
+library(car)
+library(Hmisc)
+
+
+1.) look at data
+2.) impute (mean or median) OR remove missing values
+3.) Pick a subset of variables you think may be good predictors
+4.) look at data distributions and correclations (pairs.panesl(object, col = red))
+5.) split data into training and validation subsets (approx 80% trainng 20% validation)
+
+
+
+
+
+library(car) #for vif()
+library(ggplot) #for diagnostic plotting
+library(Rcpp)
+library(psych) #for pairs.panels()
+PrimeIDpct <- read.csv(file.choose(),header=TRUE,stringsAsFactors = TRUE) #load data
+head(PrimeIDpct) #inspect top 6 rows
+summary(PrimeIDpct) #summary data.frame
+str(PrimeIDpct) #look at structure of data
+pairs.panels(PrimeIDpct, col = "red") #look for indications of multicollinearity as well as distributions of the data
+View(PrimeIDpct) #inspect raw data if needed
+subPrimeIDtight <- subset(PrimeIDpct, select = c(Region,Prime_PCT_Sales,TYBasket.,Pct.Mkd,Income.100K.and.150K)) #scale down data based on hypothesis
+pairs.panels(subPrimeIDtight)  #re-check pairs.panels. Two outliers in Pct.Mkd that may be problematic
+lmAllTight <- lm(Prime_PCT_Sales ~ TYBasket. + Pct.Mkd + Income.100K.and.150K + Region, data = subPrimeIDtight, na.action = na.exclude) #multivariable model
+summary(lmAllTight) #summarize model [pvalue, coefficients, fstats, etc.]
+vif(lmAllTight) #check for multicolinearity. Note that under 5 is good, over 10 is worrisome, 5-10 bears consideration
+qqPlot(lmAllTight) #look for independence. want a staight line, not dots outside bounds
+#can stop here if all checks out
+#But, best practice is cross validation, assuming sample size is large enough:
+subPrimeIDtight_noNA <- subPrimeIDtight[complete.cases(subPrimeIDtight),] #remove rows with NA's
+#cross validation begins:
+set.seed(2018)
+training.size <- 0.8
+training.index <- sample.int(length(subPrimeIDtight$Prime_PCT_Sales), round(length(subPrimeIDtight$Prime_PCT_Sales)* training.size))
+training.sample <- subPrimeIDtight[training.index,]
+validate.sample <- subPrimeIDtight[-training.index,]
+Train <- lm(Prime_PCT_Sales ~ TYBasket. + Pct.Mkd + Income.100K.and.150K + Region, data = training.sample, na.action = na.exclude)
+summary(Train)
+Validate <- lm(Prime_PCT_Sales ~ TYBasket. + Pct.Mkd + Income.100K.and.150K + Region, data = validate.sample, na.action = na.exclude)
+summary(Validate)
+
+
+
+
+
+******************************************************************
+*****************************************************************
+*********************#SUPERVISED MACHINE LEARNING******************
+
+
+***************#CLASSIFICATION TREES*****************************
+#Advantages
+#one of the biggest advantages is explainability. Just follow the path 
+#require no normalization for numeric features
+#can handle categorical variables without dummy variables
+#Most handle missing data well and requires little to no data prep
+#Fast to train 
+
+#disadvantages
+#high variance can make tree inaccurate
+#susceptible to overfitting
+#larger trees can be difficult
+#variance can be small between branches)
+
+
+library(rpart)
+library(caret) #for confusion matrix
+credit_model <- rpart(formula = default ~ ., 
+                      data = creditsub, 
+                      method = "class")   #default ~ . means predict "default" using all columns
+
+rpart.plot(x = credit_model, yesno = 2, type = 0, extra = 0)  #plot the model... Type defines wether to show "raw" or "prediction"
+
+
+#Should almost always train the data and cross-validate, 80/20 is good most of the time
+1.) get number of rows
+2.) define the % you want for train/test
+3.) set set.seed and create vector index for training
+4.) Subset using training vector index
+5.) exclude training indices for test seT
+
+n <- nrow(credit) #Step 1
+n_train <- round(0.8 * n) # Number of rows for the training set (80% of the dataset)
+set.seed(123)
+train_indices <- sample(1:n, n_train) # Create a vector of indices which is an 80% random sample
+credit_train <- credit[train_indices, ]  #Get trainng subset
+credit_test <- credit[-train_indices, ]  #get test subset for validation
+
+credit_model <- rpart(formula = default ~., 
+                      data = credit_train, 
+                      method = "class")  #model the training set. "Class" gives us a classification tree and "anova" gives us a regression tree
+
+print(credit_model) #inspect the model output
+
+#Evaluation of model and predictions:
+#predict will give us the probability that each variable belongs to the class
+#When "type" equals prob, predictions for each variable and will be printed out
+#Accuracy: how often the model predicts the class correctly. Ratio between the # of correct and total number of rows in the data. It is class agnostic, meaning predictions between class are weighted equally
+#Confusion Matrix: shows more detailed breakdown of correct vs incorrect predictions for each class. A good model will contain most counts in the diagonal
+class_prediction <- predict(object = credit_model,  
+                        newdata = credit_test,  
+                        type = "class")    #create a prediction object
+confusionMatrix(data = class_prediction,         
+                reference = credit_test$default)  #show us confusion matrix (uses Caret package)
+
+#we are shooting for pure regions between boundaries. We want to measure the "impurity" of a split. i.e. "how mixed are the splits". We want to minimize the impurity, which means minimizing the Gini index
+
+credit_model1 <- rpart(formula = default ~ ., 
+                       data = credit_train, 
+                       method = "class",
+                       parms = list(split = "gini"))# Train a gini-based model
+credit_model2 <- rpart(formula = default ~ ., 
+                       data = credit_train, 
+                       method = "class",
+                       parms = list(split = "information")) # Train an information-based model
+pred1 <- predict(object = credit_model1,   # Generate predictions on the validation set using the gini model
+                 newdata = credit_test,
+                 type = "class")    
+pred2 <- predict(object = credit_model2,  # Generate predictions on the validation set using the information model
+                 newdata = credit_test,
+                 type = "class")
+
+# Compare classification error
+ce(actual = credit_test$default, 
+     predicted = pred1)
+ce(actual = credit_test$default, 
+     predicted = pred2)  
+
+
+********************REGRESSION TREES**************
+#one of the biggest differences is we'll use a training set, validation set and test set.
+#Validation set will be used to tune the parameters
+#Split the data into the 3 sets:
+library(rpart)
+library(Metrics) #for MAE/RMSE
+
+set.seed(1)
+assignment <- sample(1:3, size = nrow(grade), prob = c(.7,.15,.15), replace = TRUE)
+grade_train <- grade[assignment == 1, ]    # subset the grade data frame to training indices only
+grade_valid <- grade[assignment == 2, ]  # subset the grade data frame to validation indices only
+grade_test <- grade[assignment == 3, ]   # subset the grade data frame to test indices only
+grade_model <- rpart(formula = final_grade ~ ., 
+                     data = grade_train, 
+                     method = "anova")  #Same as classification tree, except "anova" instead of class
+
+#remmber there is no such thing as "accuracy" in regression. We can,however, measure how far our predictions are from the true measures (MAE <-absolute differences from error & RMSE <-squared differences of the error)
+# Generate predictions on a test set:
+pred <- predict(object = grade_model,   # model object 
+                newdata = grade_test)  # test dataset
+
+# Compute the RMSE
+rmse(actual = grade_test$final_grade,   #what we want to measure our predictions against. The actual final grades vector
+     predicted = pred)   #the predictions we generated
+
+#HYPERPARAMETERS:
+#essentially tweaking the default model parameters. ("control" parameter in rpart)
+3 important control parameters for size of tree:
+1.) min split - the minimum # of datapoints required for model to produce a split. default is 20
+2.) cp - complexity parameter #dfault is .01. The smaller the more complex
+3.) maxdepth - #limits the maximum number of nodes between start and leaves. default is 30
+
+
+To find the best cp, you can plot to cp values and look for the row with the minimum error: print(model$cptable)
+Tune the model:
+model_pruned <- prune(tree = modelobj, cp = optimal cp)
+
+Example:
+plotcp(grade_model)
+print(grade_model$cptable)
+
+opt_index <- which.min(grade_model$cptable[, "xerror"]) # Retrieve optimal cp value based on cross-validated error
+cp_opt <- grade_model$cptable[opt_index, "CP"] #assign the optimal value to the cp_opt
+
+grade_model_opt <- prune(tree = grade_model, 
+                         cp = cp_opt)   # Prune the model (to optimized cp value)
+rpart.plot(x = grade_model_opt, yesno = 2, type = 0, extra = 0)  # Plot the optimized model
+
+************MODEL SELECTION****************
+#GRID SEARCH across hyperparameters
+#Goal is to find the best model based off a chosen performance metric
+
+library(caret)
+1.) setup the grid and creats a data frame
+# Establish a list of possible values for minsplit and maxdepth
+minsplit <- seq(1, 4, 1)
+maxdepth <- seq(1, 6, 1)
+hyper_grid <- expand.grid(minsplit = minsplit, maxdepth = maxdepth) #transform into data frame containing all combinations 
+num_models <- nrow(hyper_grid) # Number of potential models in the grid
+grade_models <- list() # Create an empty list where we'll store the models
+for (i in 1:num_models) {    # Write a loop over the rows of hyper_grid to train the grid of models. 
+
+    # Get minsplit, maxdepth values at row i
+    minsplit <- hyper_grid$minsplit[i]
+    maxdepth <- hyper_grid$maxdepth[i]
+
+    # Train a model and store in the list
+    grade_models[[i]] <- rpart(formula = final_grade ~ ., 
+                               data = grade_train, 
+                               method = "anova",
+                               minsplit = minsplit,
+                               maxdepth = maxdepth)
+}    ##NOTE: carat package will do this, but this is a good learning exercisw
+
+
+rmse_values <- c()  # Create an empty vector to store RMSE values. Note we're using RMSE here but we could use AUC or MAE
+
+
+for (i in 1:num_models) {     # Write a loop over the models to compute validation RMSE
+
+    model <- grade_models[[i]]   # Retrieve the i^th model from the list
+    pred <- predict(object = model,
+                    newdata = grade_valid)   # Generate predictions on grade_valid 
+    rmse_values[i] <- rmse(actual = grade_valid$final_grade, 
+                           predicted = pred)     # Compute validation RMSE and add to the 
+}
+
+
+best_model <- grade_models[[which.min(rmse_values)]]  # Identify the model with smallest validation set RMSE
+best_model$control  # Print the model paramters of the best model
+
+pred <- predict(object = best_model,
+                newdata = grade_test)  # Compute test set RMSE on best_model
+RMSE(actual = grade_test$final_grade, 
+     predicted = pred)     
+
+***************#BAGGING = Bootstrap Aggregating*******************
+
+1.) take multiple bags (1/2 of N) from the trainng dataset (B)
+2.) train decision tree on newly created bootstrap sample. The more the better, typically
+3.) Final prediction will be an average prediction across all the bootstrapped trees "wisdom of the crowds"
+Bagging is great for removing variance in an unstable model 
+
+library(ipred) #for predictions
+library(caret) #for confusion matrix
+set.seed(123)
+credit_model <- bagging(formula = default ~ .,   # Train a bagged model
+                        data = credit_train,
+                        coob = TRUE)
+print(credit_model)
+#Evaluate:
+
+
+
+
+
+
+
